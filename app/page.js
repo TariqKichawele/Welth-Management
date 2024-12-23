@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { ArrowRight, ArrowRight2 } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import Hero from "@/components/Hero";
 import { featuresData, howItWorksData, testimonialsData, statsData } from "@/data/landing";
 

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { accountSchema } from '@/lib/schema';
@@ -15,10 +15,18 @@ import {
     DrawerClose
 } from "./ui/drawer";
 import { Loader2 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { 
+    Select, 
+    SelectContent, 
+    SelectItem, 
+    SelectTrigger, 
+    SelectValue 
+} from './ui/select';
 import { Switch } from './ui/switch';
 import useFetch from '@/hooks/useFetch';
 import { createAccount } from '@/actions/dashboard';
+import { toast } from 'sonner';
+
 const CreateAccountDrawer = ({ children }) => {
     const [ open, setOpen ] = useState(false);
     const { 
@@ -48,6 +56,20 @@ const CreateAccountDrawer = ({ children }) => {
     const onSubmit = async (data) => {
         await createAccountFn(data);
     }
+
+    useEffect(() => {
+        if (newAccount) {
+            toast.success("Account created successfully");
+            reset();
+            setOpen(false);
+        }
+    }, [newAccount, reset])
+
+    useEffect(() => {
+        if (error) {
+            toast.error(error.message || 'Failed to create account');
+        }
+    }, [error])
   return (
     <Drawer open={open} onOpenChange={setOpen}>
         <DrawerTrigger asChild>{children}</DrawerTrigger>

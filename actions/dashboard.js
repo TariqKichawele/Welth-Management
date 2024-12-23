@@ -2,9 +2,10 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
+import { db } from "@/lib/prisma";
 
 
-const serializeTransaction = (obj) => {
+export const serializeTransaction = (obj) => {
     const serialized = { ...obj };
 
     if (obj.balance) {
@@ -59,6 +60,35 @@ export async function createAccount(data) {
         return { success: true, account: serializedAccount };
     } catch (error) {
         throw new Error(error.message);
+    }
+}
+
+export async function getUserAccounts() {
+    const { userId } = await auth();
+    if (!userId) throw new Error("Unauthorized");
+
+    const user = await db.user.findUnique({
+        where: { clerkUserId: userId },
+    })
+    if (!user) throw new Error("User not found");
+
+    try {
+        const accounts = await db.account.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+            include: {
+                _count: {
+                    select: {
+                        transactions: true
+                    }
+                }
+            }
+        });
+
+        const serializedAccounts = accounts.map(serializeTransaction);
+        return serializedAccounts;
+    } catch (error) {
+        console.error(error);
     }
 }
 

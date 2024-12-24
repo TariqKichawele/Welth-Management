@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/lib/prisma";
 
 
-export const serializeTransaction = (obj) => {
+const serializeTransaction = (obj) => {
     const serialized = { ...obj };
 
     if (obj.balance) {

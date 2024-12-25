@@ -1,6 +1,9 @@
 'use server';
 
 import { revalidatePath } from "next/cache";
+import { db } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+
 
 const serializeAmount = (obj) => ({
     ...obj,
@@ -52,6 +55,8 @@ export async function createTransaction(data) {
 
         revalidatePath("/dashboard");
         revalidatePath(`/account/${transaction.accountId}`);
+        
+        console.log(transaction)
 
         return { success: true, data: serializeAmount(transaction) };
     } catch (error) {

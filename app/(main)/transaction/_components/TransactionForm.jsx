@@ -26,8 +26,10 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { Input } from '@/components/ui/input'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 const TransactionForm = ({ accounts, categories }) => {
+    const router = useRouter();
 
     const {
         register,
@@ -52,7 +54,7 @@ const TransactionForm = ({ accounts, categories }) => {
     const {
         loading: transactionLoading,
         fn: createTransactionFn,
-        data: createTransactionData,
+        data: transactionResult,
     } = useFetch(createTransaction);
 
     const onSubmit = (data) => {
@@ -71,6 +73,16 @@ const TransactionForm = ({ accounts, categories }) => {
     const date = watch("date");
 
     const filteredCategories = categories.filter((c) => c.type === type);
+
+    console.log(transactionResult);
+
+    useEffect(() => {
+        if (transactionResult?.success && !transactionLoading) {
+            toast.success("Transaction created successfully");
+            router.push(`/account/${transactionResult?.data.accountId}`);
+        };
+        reset();
+    }, [transactionResult, transactionLoading, editMode])
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>

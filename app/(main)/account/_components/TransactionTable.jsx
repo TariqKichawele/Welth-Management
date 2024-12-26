@@ -336,96 +336,94 @@ const TransactionTable = ({ transactions }) => {
                             </TableCell>
                         </TableRow>
                     ) : (
-                    paginatedTransactions.map((transaction) => (
-                        <TableRow key={transaction.id}>
-                            <TableCell>
-                                <Checkbox
-                                    checked={selectedIds.includes(transaction.id)}
-                                    onCheckedChange={() => handleSelect(transaction.id)}
-                                />
-                            </TableCell>
-                            <TableCell>
-                                {format(new Date(transaction.date), "PP")}
-                            </TableCell>
-                            <TableCell>{transaction.description}</TableCell>
-                            <TableCell className="capitalize">
-                                <span
-                                    style={{
-                                        background: categoryColors[transaction.category],
-                                    }}
-                                    className="px-2 py-1 rounded text-white text-sm"
+                        paginatedTransactions.map((transaction) => (
+                            <TableRow key={transaction.id}>
+                                <TableCell>
+                                    <Checkbox
+                                        checked={selectedIds.includes(transaction.id)}
+                                        onCheckedChange={() => handleSelect(transaction.id)}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    {format(new Date(transaction.date), "PP")}
+                                </TableCell>
+                                <TableCell>{transaction.description}</TableCell>
+                                <TableCell className="capitalize">
+                                    <span
+                                        style={{
+                                            background: categoryColors[transaction.category],
+                                        }}
+                                        className="px-2 py-1 rounded text-white text-sm"
+                                    >
+                                        {transaction.category}
+                                    </span>
+                                </TableCell>
+                                <TableCell
+                                    className={cn(
+                                    "text-right font-medium",
+                                    transaction.type === "EXPENSE"
+                                        ? "text-red-500"
+                                        : "text-green-500"
+                                    )}
                                 >
-                                    {transaction.category}
-                                </span>
-                            </TableCell>
-                            <TableCell
-                                className={cn(
-                                "text-right font-medium",
-                                transaction.type === "EXPENSE"
-                                    ? "text-red-500"
-                                    : "text-green-500"
-                                )}
-                            >
-                                {transaction.type === "EXPENSE" ? "-" : "+"}$
-                                {transaction.amount.toFixed(2)}
-                            </TableCell>
-                            <TableCell>
-                                {transaction.isRecurring ? (
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger>
-                                                <Badge
-                                                    variant="secondary"
-                                                    className="gap-1 bg-purple-100 text-purple-700 hover:bg-purple-200"
-                                                >
-                                                    <RefreshCw className="h-3 w-3" />
-                                                    {RECURRING_INTERVALS[transaction.recurringInterval]}
-                                                </Badge>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <div className="text-sm">
-                                                    <div className="font-medium">Next Date:</div>
-                                                    <div>
-                                                        {format(new Date(transaction.nextRecurringDate),"PPP")}
+                                    {transaction.type === "EXPENSE" ? "-" : "+"}$
+                                    {transaction.amount.toFixed(2)}
+                                </TableCell>
+                                <TableCell>
+                                    {transaction.isRecurring ? (
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger>
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="gap-1 bg-purple-100 text-purple-700 hover:bg-purple-200"
+                                                    >
+                                                        <RefreshCw className="h-3 w-3" />
+                                                        {RECURRING_INTERVALS[transaction.recurringInterval]}
+                                                    </Badge>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <div className="text-sm">
+                                                        <div className="font-medium">Next Date:</div>
+                                                        <div>
+                                                            {format(new Date(transaction.nextRecurringDate),"PPP")}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                ) : (
-                                    <Badge variant="outline" className="gap-1">
-                                        <Clock className="h-3 w-3" />
-                                        One-time
-                                    </Badge>
-                                )}
-                            </TableCell>
-                            <TableCell>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem
-                                            onClick={() =>
-                                                router.push(`/transaction/create?edit=${transaction.id}`)
-                                            }
-                                        >
-                                            Edit
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem
-                                            className="text-destructive"
-                                            onClick={() => deleteFn([transaction.id])}
-                                        >
-                                            Delete
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </TableCell>
-                        </TableRow>
-                    ))
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    ) : (
+                                        <Badge variant="outline" className="gap-1">
+                                            <Clock className="h-3 w-3" />
+                                            One-time
+                                        </Badge>
+                                    )}
+                                </TableCell>
+                                <TableCell>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem
+                                                onClick={() => router.push(`/transaction/create?edit=${transaction.id}`)}
+                                            >
+                                                Edit
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem
+                                                className="text-destructive"
+                                                onClick={() => deleteFn([transaction.id])}
+                                            >
+                                                Delete
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))
                     )}
                 </TableBody>
             </Table>

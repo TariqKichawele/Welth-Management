@@ -1,6 +1,6 @@
 'use client'
 
-import { createTransaction } from '@/actions/transaction'
+import { createTransaction, updateTransaction } from '@/actions/transaction'
 import useFetch from '@/hooks/useFetch'
 import { transactionSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -27,11 +27,18 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { Input } from '@/components/ui/input'
 import CreateAccountDrawer from '@/components/CreateAccountDrawer'
 import { toast } from 'sonner'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import ReceiptScanner from './ReceiptScanner'
 
-const TransactionForm = ({ accounts, categories }) => {
+const TransactionForm = ({ 
+    accounts, 
+    categories,
+    editMode = false,
+    initialData = null
+}) => {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const editId = searchParams?.get("edit");
 
     const {
         register,
@@ -43,21 +50,35 @@ const TransactionForm = ({ accounts, categories }) => {
         reset
     } = useForm({
         resolver: zodResolver(transactionSchema),
-        defaultValues: {
-            type: "EXPENSE",
-            amount: "",
-            description: "",
-            date: new Date(),
-            accountId: accounts.find((ac) => ac.isDefault)?.id,
-            isRecurring: false,
-        }
+        defaultValues: 
+        editMode && initialData
+            ?   {
+                    type: initialData.type,
+                    amount: initialData.amount.toString(),
+                    description: initialData.description,
+                    accountId: initialData.accountId,
+                    category: initialData.category,
+                    date: new Date(initialData.date),
+                    isRecurring: initialData.isRecurring,
+                    ...(initialData.recurringInterval && {
+                        recurringInterval: initialData.recurringInterval,
+                    }),
+                }
+            :   {
+                    type: "EXPENSE",
+                    amount: "",
+                    description: "",
+                    accountId: accounts.find((ac) => ac.isDefault)?.id,
+                    date: new Date(),
+                    isRecurring: false,
+            },
     });
 
     const {
         loading: transactionLoading,
         fn: createTransactionFn,
         data: transactionResult,
-    } = useFetch(createTransaction);
+    } = useFetch(editMode ? updateTransaction : createTransaction);
 
     const onSubmit = (data) => {
         const formData = {
@@ -65,10 +86,12 @@ const TransactionForm = ({ accounts, categories }) => {
             amount: parseFloat(data.amount),
         };
 
-        createTransactionFn(formData);
+        if (editMode) {
+            createTransactionFn(editId, formData);
+        } else {
+            createTransactionFn(formData);
+        }
     }
-
-    const editMode = false;
 
     const type = watch("type");
     const isRecurring = watch("isRecurring");

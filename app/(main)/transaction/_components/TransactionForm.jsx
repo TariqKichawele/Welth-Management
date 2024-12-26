@@ -18,6 +18,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
+import { Switch } from '@/components/ui/switch'
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -95,7 +96,7 @@ const TransactionForm = ({ accounts, categories }) => {
             if (scannedData.category) {
                 setValue("category", scannedData.category);
             }
-            
+
             toast.success("Receipt scanned successfully");
         }
     }
@@ -230,6 +231,20 @@ const TransactionForm = ({ accounts, categories }) => {
                 <p className="text-sm text-red-500">{errors.description.message}</p>
             )}
         </div>
+
+        <div className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="space-y-0.5">
+                <label className="text-base font-medium">Recurring Transaction</label>
+                <div className="text-sm text-muted-foreground">
+                    Set up a recurring schedule for this transaction
+                </div>
+            </div>
+            <Switch
+                checked={isRecurring}
+                onCheckedChange={(checked) => setValue("isRecurring", checked)}
+            />
+        </div>
+
 
         {isRecurring && (
             <div className="space-y-2">

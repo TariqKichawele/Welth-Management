@@ -3,8 +3,8 @@
 import { db } from "@/lib/prisma";
 import { subDays } from "date-fns";
 
-const ACCOUNT_ID = "58df2099-c595-4278-8883-cfb885794b27";
-const USER_ID = "41619124-b42f-44f1-a958-a5ab2235bd77";
+const ACCOUNT_ID = "a33d7a82-1936-4ef8-8296-3b3c4a57286b";
+const USER_ID = "18d96947-b3dd-4f76-b22f-e7c660540ef6";
 
 // Categories with their typical amount ranges
 const CATEGORIES = {
@@ -32,7 +32,6 @@ const CATEGORIES = {
 function getRandomAmount(min, max) {
   return Number((Math.random() * (max - min) + min).toFixed(2));
 }
-
 // Helper to get random category with amount
 function getRandomCategory(type) {
   const categories = CATEGORIES[type];

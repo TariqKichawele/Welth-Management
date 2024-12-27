@@ -208,7 +208,7 @@ const styles = {
     row: {
       display: "flex",
       justifyContent: "space-between",
-      padding: "12px 0",
+      padding: "12px 5px"  ,
       borderBottom: "1px solid #e5e7eb",
     },
     footer: {
